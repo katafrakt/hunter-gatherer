@@ -21,7 +21,7 @@ defmodule HunterGatherer do
         base: URI.parse(base),
         pending: [base],
         good: MapSet.new,
-        bad: MapSet.new
+        bad: Map.new
       }
     end
 
@@ -35,8 +35,8 @@ defmodule HunterGatherer do
       {url, new_config}
     end
 
-    def append_bad(backpack, url) do
-      new_bad = backpack.bad |> MapSet.put(url)
+    def append_bad(backpack, url, reason) do
+      new_bad = backpack.bad |> Map.put(url, reason)
       struct(backpack, bad: new_bad)
     end
 
@@ -56,11 +56,19 @@ defmodule HunterGatherer do
     end
 
     def has_been_processed?(backpack, url) do
-      MapSet.member?(backpack.good, url) || MapSet.member?(backpack.bad, url)
+      MapSet.member?(backpack.good, url) || Map.has_key?(backpack.bad, url)
     end
 
     def report(backpack) do
-      IO.inspect backpack.bad
+      backpack.bad |> Enum.each(fn({key, val}) -> IO.puts(key <> " - " <> format_error(val)) end)
+    end
+
+    defp format_error(error) when is_integer(error) do
+      error |> to_string
+    end
+
+    defp format_error(error) do
+      elem(error.reason, 0) |> to_string
     end
   end
 
@@ -90,20 +98,20 @@ defmodule HunterGatherer do
     case HTTPoison.get(url, [], [follow_redirect: true, max_redirect: 5]) do
       {:ok, result} ->
         process_success(url, result, backpack)
-      {:error, _} ->
-        process_failure(url, backpack)
+      {:error, error} ->
+        process_failure(url, backpack, error)
     end
   end
 
-  defp process_failure(url, backpack) do
-    Backpack.append_bad(backpack, url)
+  defp process_failure(url, backpack, reason) do
+    Backpack.append_bad(backpack, url, reason)
   end
 
   defp process_success(url, result, backpack) do
     case result.status_code do
       200 ->
         backpack = Backpack.append_good(backpack, url)
-        
+
         case String.split(url, backpack.base |> to_string, parts: 2) do
           [_, _] ->
             links = result.body
@@ -115,8 +123,8 @@ defmodule HunterGatherer do
           [_] ->
             backpack
         end
-      _ ->
-        process_failure(url, backpack)
+      code ->
+        process_failure(url, backpack, code)
     end
   end
 end
