@@ -68,6 +68,7 @@ defmodule HunterGatherer do
     end
 
     defp format_error(error) do
+      IO.inspect error
       elem(error.reason, 0) |> to_string
     end
   end
@@ -84,8 +85,15 @@ defmodule HunterGatherer do
       if Backpack.has_been_processed?(backpack, url) do
         loop(backpack)
       else
-        IO.puts url
-        process_url(url, backpack) |> loop
+        case process_url(url, backpack) do
+          {:ok, url, links} ->
+            backpack
+            |> Backpack.append_pending(links)
+            |> Backpack.append_good(url)
+          {:error, url, reason} ->
+            backpack
+            |> Backpack.append_bad(url, reason)
+        end |> loop
       end
     else
       Backpack.report(backpack)
@@ -93,38 +101,26 @@ defmodule HunterGatherer do
   end
 
   defp process_url(url, backpack) do
-    IO.puts length(backpack.pending)
-
-    case HTTPoison.get(url, [], [follow_redirect: true, max_redirect: 5]) do
+    case HTTPoison.get(url, [], [follow_redirect: true, max_redirect: 5, ssl: [{:versions, [:'tlsv1.2']}]]) do
+      {:ok, %{status_code: 200} = result} ->
+        {:ok, url, get_links(url, result, backpack)}
       {:ok, result} ->
-        process_success(url, result, backpack)
+        {:error, url, result.status_code}
       {:error, error} ->
-        process_failure(url, backpack, error)
+        {:error, url, error}
     end
   end
 
-  defp process_failure(url, backpack, reason) do
-    Backpack.append_bad(backpack, url, reason)
-  end
-
-  defp process_success(url, result, backpack) do
-    case result.status_code do
-      200 ->
-        backpack = Backpack.append_good(backpack, url)
-
-        case String.split(url, backpack.base |> to_string, parts: 2) do
-          [_, _] ->
-            links = result.body
-              |> Floki.find("a")
-              |> Floki.attribute("href")
-              |> Enum.map(fn(url) -> URI.parse(url) end)
-              |> Enum.map(fn(url) -> URI.merge(backpack.base, url) |> to_string end)
-            backpack = Backpack.append_pending(backpack, links)
-          [_] ->
-            backpack
-        end
-      code ->
-        process_failure(url, backpack, code)
+  defp get_links(url, result, backpack) do
+    case String.split(url, backpack.base |> to_string, parts: 2) do
+      [_, _] ->
+        result.body
+        |> Floki.find("a")
+        |> Floki.attribute("href")
+        |> Enum.map(fn(url) -> URI.parse(url) end)
+        |> Enum.map(fn(url) -> URI.merge(backpack.base, url) |> to_string end)
+      [_] ->
+        []
     end
   end
 end
