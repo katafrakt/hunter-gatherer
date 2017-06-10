@@ -53,14 +53,15 @@ defmodule HunterGatherer do
     end
   end
 
-  defp get_links(url, result, backpack) do
-    case String.split(url, backpack.base |> to_string, parts: 2) do
+  defp get_links(original_url, result, backpack) do
+    case String.split(original_url, backpack.base |> to_string, parts: 2) do
       [_, _] ->
+        original_uri = URI.parse(original_url)
         result.body
         |> Floki.find("a")
         |> Floki.attribute("href")
         |> Enum.map(fn(url) -> URI.parse(url) end)
-        |> Enum.map(fn(url) -> URI.merge(backpack.base, url) |> to_string end)
+        |> Enum.map(fn(url) -> URI.merge(backpack.base, URI.merge(original_uri, url)) |> to_string end)
       [_] ->
         []
     end
