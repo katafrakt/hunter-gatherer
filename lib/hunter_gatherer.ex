@@ -1,4 +1,6 @@
 defmodule HunterGatherer do
+  alias HunterGatherer.Reporter
+
   def start(url) do
     backpack = Backpack.init(url)
     loop(backpack, 5)
@@ -28,7 +30,7 @@ defmodule HunterGatherer do
         end
       end
     else
-      Backpack.report(backpack)
+      Reporter.generate_html_report(backpack)
     end
   end
 
