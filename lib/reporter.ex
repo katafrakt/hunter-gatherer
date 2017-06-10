@@ -28,7 +28,10 @@ defmodule HunterGatherer.Reporter do
   end
 
   defp format_error(error) do
-    IO.inspect error
-    elem(error.reason, 0) |> to_string
+    if is_map(error.reason) do
+      elem(error.reason, 0) |> to_string
+    else
+      error.reason |> to_string
+    end
   end
 end
