@@ -3,7 +3,7 @@ defmodule HunterGatherer.Reporter do
     filename = "report.html"
     {:ok, file} = File.open filename, [:write]
 
-    head = "
+    template = "
     <html>
     <body>
     <table>
@@ -12,15 +12,23 @@ defmodule HunterGatherer.Reporter do
     <th>URL</th>
     <th>reason</th>
     </tr>
+    {{#badurls}}
+    <tr>
+    <td><a href=\"{{url}}\">{{url}}</a></td>
+    <td>{{reason}}</td>
+    </tr>
+    {{/badurls}}
+    </table>
+    </body>
+    </html>
     "
 
     data = backpack.bad |> Enum.map(fn({key, val}) ->
-      "<tr><td>" <> key <> "</td><td>" <> format_error(val) <> "</td></tr>"
-    end) |> Enum.join(~s(\n))
+      [url: key, reason: format_error(val)]
+    end)
 
-    foot = "</body</html>"
-
-    IO.binwrite(file, head <> data <> foot)
+    html = Mustachex.render(template, %{badurls: data})
+    IO.binwrite(file, html)
   end
 
   defp format_error(error) when is_integer(error) do
@@ -28,7 +36,7 @@ defmodule HunterGatherer.Reporter do
   end
 
   defp format_error(error) do
-    if is_map(error.reason) do
+    if is_tuple(error.reason) || is_map(error.reason) do
       elem(error.reason, 0) |> to_string
     else
       error.reason |> to_string

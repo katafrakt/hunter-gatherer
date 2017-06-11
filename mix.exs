@@ -30,7 +30,8 @@ defmodule HunterGatherer.Mixfile do
   defp deps do
     [
       {:floki, "~> 0.17.0"},
-      {:httpoison, "~> 0.11.1"}
+      {:httpoison, "~> 0.11.1"},
+      {:mustachex, "~> 0.0.1"}
     ]
   end
 end
