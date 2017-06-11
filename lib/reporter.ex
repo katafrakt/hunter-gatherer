@@ -3,25 +3,28 @@ defmodule HunterGatherer.Reporter do
     filename = "report.html"
     {:ok, file} = File.open filename, [:write]
 
-    template = "
+    template = """
     <html>
-    <body>
-    <table>
-    <h3>Bad URLs</h3>
-    <tr>
-    <th>URL</th>
-    <th>reason</th>
-    </tr>
-    {{#badurls}}
-    <tr>
-    <td><a href=\"{{url}}\">{{url}}</a></td>
-    <td>{{reason}}</td>
-    </tr>
-    {{/badurls}}
-    </table>
-    </body>
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css" />
+      </head>
+      <body>
+        <h3>Bad URLs</h3>
+        <table class="pure-table pure-table-striped">
+          <tr>
+            <th>URL</th>
+            <th>reason</th>
+          </tr>
+          {{#badurls}}
+            <tr>
+              <td><a href="{{url}}">{{url}}</a></td>
+              <td>{{reason}}</td>
+            </tr>
+          {{/badurls}}
+        </table>
+      </body>
     </html>
-    "
+    """
 
     data = backpack.bad |> Enum.map(fn({key, val}) ->
       [url: key, reason: format_error(val)]
