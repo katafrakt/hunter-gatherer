@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css" />
+  </head>
+  <body>
+    <h3>Bad URLs</h3>
+    <table class="pure-table pure-table-striped">
+      <tr>
+        <th>URL</th>
+        <th>reason</th>
+      </tr>
+      {{#badurls}}
+        <tr>
+          <td><a href="{{url}}">{{url}}</a></td>
+          <td>{{reason}}</td>
+        </tr>
+      {{/badurls}}
+    </table>
+  </body>
+</html>
