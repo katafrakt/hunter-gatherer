@@ -1,20 +1,32 @@
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css" />
   </head>
   <body>
     <h3>Bad URLs</h3>
-    <table class="pure-table pure-table-striped">
-      <tr>
-        <th>URL</th>
-        <th>reason</th>
-      </tr>
-      {{#badurls}}
+    <table class="ui sortable celled table">
+      <thead>
         <tr>
-          <td><a href="{{url}}">{{url}}</a></td>
-          <td>{{reason}}</td>
+          <th>URL</th>
+          <th>reason</th>
         </tr>
-      {{/badurls}}
+      </thead>
+      <tbody>
+        {{#badurls}}
+          <tr>
+            <td><a href="{{url}}">{{url}}</a></td>
+            <td>{{reason}}</td>
+          </tr>
+        {{/badurls}}
+      </tbody>
     </table>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script src="http://semantic-ui.com/javascript/library/tablesort.js"></script>
+    <script>
+     $('table').tablesort();
+    </script>
   </body>
 </html>
