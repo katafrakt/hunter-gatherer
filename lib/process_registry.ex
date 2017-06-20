@@ -6,6 +6,7 @@ defmodule HunterGatherer.ProcessRegistry do
   end
 
   def start_enough_processes(backpack, max_processes) do
+    remove_dead
     num_of_pending = length(backpack.pending) # TODO: move to Backpack, leaking implementation
     processes_to_start = Enum.min([num_of_pending, max_processes]) - count()
     if processes_to_start > 0 do
@@ -19,6 +20,15 @@ defmodule HunterGatherer.ProcessRegistry do
     else
       backpack
     end
+  end
+
+  def remove_dead do
+    Agent.update(__MODULE__, fn(set) ->
+      set
+      |> MapSet.to_list
+      |> Enum.filter(&Process.alive?(&1))
+      |> MapSet.new
+    end)
   end
 
   def add_process(pid) do
