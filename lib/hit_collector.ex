@@ -1,4 +1,6 @@
 defmodule HunterGatherer.HitCollector do
+  alias HunterGatherer.Utils
+
   def start_link do
     Agent.start_link(fn -> Map.new end, name: __MODULE__)
   end
@@ -15,7 +17,6 @@ defmodule HunterGatherer.HitCollector do
   end
 
   def get(url) do
-    IO.puts url
     case Agent.get(__MODULE__, &(&1[url])) do
       nil -> 0
       num -> num
@@ -23,6 +24,8 @@ defmodule HunterGatherer.HitCollector do
   end
 
   def add_many(urls) do
-    Enum.each(urls, &collect(&1))
+    urls
+    |> Enum.map(&Utils.normalize_url(&1))
+    |> Enum.each(&collect(&1))
   end
 end

@@ -6,6 +6,8 @@
 
     defstruct [:base, :pending, :good, :bad]
 
+    alias HunterGatherer.Utils
+
     @doc """
     Initializes backpack.
 
@@ -65,12 +67,10 @@
     Returns new backpack.
     """
     def append_pending(backpack, links) do
-      links_not_checked = Enum.map(links, fn(url) ->
-        url = struct(URI.parse(url), fragment: nil) |> to_string
-        Regex.replace(~r/ /, url, "%20")
-      end) |> Enum.reject(fn(url) ->
-        Backpack.has_been_processed?(backpack, url)
-      end)
+      links_not_checked = Enum.map(links, &Utils.normalize_url(&1))
+        |> Enum.reject(fn(url) ->
+          Backpack.has_been_processed?(backpack, url)
+        end)
       new_pending = (backpack.pending ++ links_not_checked) |> Enum.uniq
       struct(backpack, pending: new_pending)
     end
