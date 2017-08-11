@@ -1,11 +1,15 @@
 defmodule HunterGatherer.Reporter do
+  alias HunterGatherer.HitCollector
+
   def generate_html_report(backpack) do
     filename = "report.html"
     {:ok, file} = File.open filename, [:write]
 
-    data = backpack.bad |> Enum.map(fn({key, val}) ->
-      [url: key, reason: format_error(val)]
-    end)
+    data = backpack.bad
+      |> Enum.map(fn({url, reason}) ->
+        %{url: url, reason: format_error(reason), hits: HitCollector.get(url)}
+      end)
+      |> Enum.sort(&(&1.hits >= &2.hits))
 
     html = Mustachex.render_file("report_template.mustache", %{badurls: data})
     IO.binwrite(file, html)

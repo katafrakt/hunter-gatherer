@@ -11,7 +11,7 @@ defmodule HunterGatherer.ProcessRegistry do
     processes_to_start = Enum.min([num_of_pending, max_processes]) - count()
     if processes_to_start > 0 do
       {url, backpack} = Backpack.get_next_pending(backpack)
-      IO.puts url
+      #IO.puts url
 
       UrlProcessor.process_async(self(), url, backpack)
       |> add_process

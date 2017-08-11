@@ -1,10 +1,12 @@
 defmodule HunterGatherer do
   alias HunterGatherer.Reporter
   alias HunterGatherer.ProcessRegistry
+  alias HunterGatherer.HitCollector
 
   def start(url) do
     backpack = Backpack.init(url)
     ProcessRegistry.start_link()
+    HitCollector.start_link()
     loop(backpack)
   end
 
@@ -21,6 +23,7 @@ defmodule HunterGatherer do
   defp listen(backpack) do
     receive do
       {:ok, url, links} ->
+        HitCollector.add_many(links)
         backpack
         |> Backpack.append_pending(links)
         |> Backpack.append_good(url)
