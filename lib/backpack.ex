@@ -4,7 +4,7 @@
     from configuration to collection of processed and pending URLs.
     """
 
-    defstruct [:base, :pending, :good, :bad]
+    defstruct [:pending, :good, :bad]
 
     alias HunterGatherer.Utils
 
@@ -17,7 +17,6 @@
     """
     def init(base) do
       %Backpack{
-        base: URI.parse(base),
         pending: [base],
         good: MapSet.new,
         bad: Map.new
