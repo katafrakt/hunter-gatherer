@@ -7,7 +7,7 @@ defmodule HunterGatherer.ProcessRegistry do
 
   def start_enough_processes(backpack, max_processes) do
     remove_dead()
-    num_of_pending = length(backpack.pending) # TODO: move to Backpack, leaking implementation
+    num_of_pending = Backpack.num_of_pending(backpack)
     processes_to_start = Enum.min([num_of_pending, max_processes]) - count()
     if processes_to_start > 0 do
       {url, backpack} = Backpack.get_next_pending(backpack)

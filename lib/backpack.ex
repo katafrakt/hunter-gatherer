@@ -80,4 +80,11 @@
     def has_been_processed?(backpack, url) do
       MapSet.member?(backpack.good, url) || Map.has_key?(backpack.bad, url)
     end
+
+    @doc """
+    Returns number of pending urls to check
+    """
+    def num_of_pending(backpack) do
+      length(backpack.pending)
+    end
   end
