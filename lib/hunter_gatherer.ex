@@ -2,12 +2,12 @@ defmodule HunterGatherer do
   alias HunterGatherer.Reporter
   alias HunterGatherer.ProcessRegistry
   alias HunterGatherer.HitCollector
-  alias HunterGatherer.Utils
+  alias HunterGatherer.Config
 
   def start(url) do
     initialize()
     backpack = Backpack.init(url)
-    Utils.config_put(:base, URI.parse(url))
+    Config.set(:base, URI.parse(url))
     loop(backpack)
   end
 
@@ -37,6 +37,6 @@ defmodule HunterGatherer do
   defp initialize do
     ProcessRegistry.start_link()
     HitCollector.start_link()
-    Utils.init_config()
+    Config.start_link()
   end
 end
