@@ -7,7 +7,8 @@ defmodule HunterGatherer.Reporter do
 
     data = backpack.bad
       |> Enum.map(fn({url, reason}) ->
-        %{url: url, reason: format_error(reason), hits: HitCollector.get(url)}
+        hits_data = HitCollector.get(url)
+        %{url: url, reason: format_error(reason), hits: hits_data.count, sources: hits_data.source }
       end)
       |> Enum.sort(&(&1.hits >= &2.hits))
 

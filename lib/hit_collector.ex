@@ -5,13 +5,13 @@ defmodule HunterGatherer.HitCollector do
     Agent.start_link(fn -> Map.new end, name: __MODULE__)
   end
 
-  def collect(url) do
+  def collect(url, source) do
     Agent.update(__MODULE__, fn(set) ->
       case set[url] do
         nil ->
-          Map.put(set, url, 1)
+          Map.put(set, url, %{ count: 1, source: [source] })
         old_value ->
-          Map.put(set, url, old_value + 1)
+          Map.put(set, url, %{ count: old_value.count + 1, source: [source | old_value.source] })
       end
     end)
   end
@@ -23,9 +23,9 @@ defmodule HunterGatherer.HitCollector do
     end
   end
 
-  def add_many(urls) do
+  def add_many(urls, source) do
     urls
     |> Enum.map(&Utils.normalize_url(&1))
-    |> Enum.each(&collect(&1))
+    |> Enum.each(&collect(&1, source))
   end
 end

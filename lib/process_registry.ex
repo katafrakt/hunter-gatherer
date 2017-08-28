@@ -11,10 +11,12 @@ defmodule HunterGatherer.ProcessRegistry do
     processes_to_start = Enum.min([num_of_pending, max_processes]) - count()
     if processes_to_start > 0 do
       {url, backpack} = Backpack.get_next_pending(backpack)
-      #IO.puts url
 
-      UrlProcessor.process_async(self(), url)
-      |> add_process
+      # not sure why double-check is needed here, but it is
+      if !Backpack.has_been_processed?(backpack, url) do
+        UrlProcessor.process_async(self(), url)
+        |> add_process
+      end
 
       start_enough_processes(backpack, max_processes)
     else

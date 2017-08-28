@@ -24,7 +24,7 @@ defmodule HunterGatherer do
   defp listen(backpack) do
     receive do
       {:ok, url, links} ->
-        HitCollector.add_many(links)
+        HitCollector.add_many(links, url)
         backpack
         |> Backpack.append_pending(links)
         |> Backpack.append_good(url)
