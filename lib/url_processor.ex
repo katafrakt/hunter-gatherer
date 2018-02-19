@@ -12,7 +12,6 @@ defmodule HunterGatherer.UrlProcessor do
   end
 
   defp process_url(url) do
-#    IO.puts url
     case HTTPoison.get(url, [], [follow_redirect: true, max_redirect: 5, ssl: [{:versions, [:'tlsv1.2']}]]) do
       {:ok, %{status_code: 200} = result} ->
         {:ok, url, get_links(url, result)}
