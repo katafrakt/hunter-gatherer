@@ -1,7 +1,7 @@
-defmodule HunterGatherer.Reporter do
+defmodule HunterGatherer.Reporters.Html do
   alias HunterGatherer.HitCollector
 
-  def generate_html_report(backpack) do
+  def generate_report(backpack) do
     filename = "report.html"
     {:ok, file} = File.open filename, [:write]
 

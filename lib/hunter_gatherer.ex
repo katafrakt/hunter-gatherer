@@ -1,5 +1,5 @@
 defmodule HunterGatherer do
-  alias HunterGatherer.Reporter
+  alias HunterGatherer.Reporters
   alias HunterGatherer.ProcessRegistry
   alias HunterGatherer.HitCollector
   alias HunterGatherer.Config
@@ -17,7 +17,7 @@ defmodule HunterGatherer do
       |> listen
       |> loop
     else
-      Reporter.generate_html_report(backpack)
+      Reporters.Html.generate_report(backpack)
     end
   end
 
