@@ -87,4 +87,11 @@
     def num_of_pending(backpack) do
       length(backpack.pending)
     end
+
+    @doc """
+    Returns number of processed urls
+    """
+    def num_of_processed(backpack) do
+      MapSet.size(backpack.good) + Map.size(backpack.bad)
+    end
   end

@@ -8,6 +8,7 @@ defmodule HunterGatherer do
     initialize()
     backpack = Backpack.init(url)
     Config.set(:base, URI.parse(url))
+    IO.write "Starting..."
     loop(backpack)
   end
 
@@ -15,8 +16,10 @@ defmodule HunterGatherer do
     if Backpack.has_next_pending?(backpack) || ProcessRegistry.has_active_processes? do
       ProcessRegistry.start_enough_processes(backpack, 5)
       |> listen
+      |> print_debug
       |> loop
     else
+      IO.puts("")
       Reporters.Html.generate_report(backpack)
     end
   end
@@ -43,5 +46,13 @@ defmodule HunterGatherer do
     ProcessRegistry.start_link()
     HitCollector.start_link()
     Config.start_link()
+  end
+
+  defp print_debug(backpack) do
+    IO.write("\r")
+    processed = Backpack.num_of_processed(backpack)
+    queued = Backpack.num_of_pending(backpack)
+    IO.write("Processed: #{processed}, queued: #{queued}        ")
+    backpack
   end
 end
