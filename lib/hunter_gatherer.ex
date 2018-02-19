@@ -8,6 +8,7 @@ defmodule HunterGatherer do
     initialize()
     backpack = Backpack.init(url)
     Config.set(:base, URI.parse(url))
+    Config.set(:user_agent, "Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0")
     IO.write "Starting..."
     loop(backpack)
   end
