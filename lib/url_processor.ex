@@ -12,7 +12,10 @@ defmodule HunterGatherer.UrlProcessor do
   end
 
   defp process_url(url) do
-    case HTTPoison.get(url, [{"User-Agent", Config.get(:user_agent)}], [follow_redirect: true, max_redirect: 5, ssl: [{:versions, [:'tlsv1.2']}]]) do
+    case HTTPoison.get(url, [{"User-Agent", Config.get(:user_agent)}], [
+              follow_redirect: true, max_redirect: 8, ssl: [{:versions, [:'tlsv1.2']}],
+              timeout: 30_000, recv_timeout: 45_000
+            ]) do
       {:ok, %{status_code: 200} = result} ->
         {:ok, url, get_links(url, result)}
       {:ok, result} ->
