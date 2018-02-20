@@ -20,7 +20,8 @@ defmodule HunterGatherer do
       |> loop
     else
       IO.puts("")
-      Reporters.Html.generate_report(backpack)
+      reporter = Reporters.Common.select(Config.get(:format))
+      reporter.generate_report(backpack)
     end
   end
 

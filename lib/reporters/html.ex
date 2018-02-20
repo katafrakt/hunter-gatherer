@@ -2,6 +2,8 @@ defmodule HunterGatherer.Reporters.Html do
   alias HunterGatherer.HitCollector
   alias HunterGatherer.Config
 
+  import HunterGatherer.Reporters.Common, only: [format_error: 1]
+
   def generate_report(backpack) do
     filename = Config.get(:output_file)
     {:ok, file} = File.open filename, [:write]
@@ -15,17 +17,5 @@ defmodule HunterGatherer.Reporters.Html do
 
     html = Mustachex.render_file("report_template.mustache", %{badurls: data})
     IO.binwrite(file, html)
-  end
-
-  defp format_error(error) when is_integer(error) do
-    error |> to_string
-  end
-
-  defp format_error(error) do
-    if is_tuple(error.reason) || is_map(error.reason) do
-      elem(error.reason, 0) |> to_string
-    else
-      error.reason |> to_string
-    end
   end
 end

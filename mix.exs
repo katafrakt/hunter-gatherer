@@ -32,7 +32,8 @@ defmodule HunterGatherer.Mixfile do
     [
       {:floki, "~> 0.17.0"},
       {:httpoison, "~> 0.11.1"},
-      {:mustachex, "~> 0.0.1"}
+      {:mustachex, "~> 0.0.1"},
+      {:poison, "~> 3.1"}
     ]
   end
 end
