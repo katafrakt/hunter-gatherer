@@ -19,18 +19,18 @@ defmodule ConfigTest do
     end
 
     test "overwrites defaults" do
-      Config.setup(@url, [user_agent: "HG", format: "json"])
+      Config.setup(@url, user_agent: "HG", format: "json")
       assert(Config.get(:format) == "json")
       assert(Config.get(:user_agent) == "HG")
     end
 
     test "does not overwrite base" do
-      Config.setup(@url, [base: "HG", format: "json"])
+      Config.setup(@url, base: "HG", format: "json")
       assert(Config.get(:base) == URI.parse(@url))
     end
 
     test "generates default output name" do
-      Config.setup(@url, [format: "png"])
+      Config.setup(@url, format: "png")
       assert(Config.get(:output_file) == "report.png")
     end
   end

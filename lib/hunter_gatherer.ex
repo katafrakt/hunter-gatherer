@@ -8,12 +8,12 @@ defmodule HunterGatherer do
     initialize()
     backpack = Backpack.init(url)
     Config.setup(url, opts)
-    IO.write "Starting..."
+    IO.write("Starting...")
     loop(backpack)
   end
 
   defp loop(backpack) do
-    if Backpack.has_next_pending?(backpack) || ProcessRegistry.has_active_processes? do
+    if Backpack.has_next_pending?(backpack) || ProcessRegistry.has_active_processes?() do
       ProcessRegistry.start_enough_processes(backpack, 5)
       |> listen
       |> print_debug
@@ -29,17 +29,19 @@ defmodule HunterGatherer do
     receive do
       {:ok, url, links} ->
         HitCollector.add_many(links, url)
+
         backpack
         |> Backpack.append_pending(links)
         |> Backpack.append_good(url)
+
       {:error, url, reason} ->
         backpack
         |> Backpack.append_bad(url, reason)
-      after
-        1_000 ->
-          IO.puts "Oooops, timeout!"
-          IO.puts ProcessRegistry.count()
-          backpack
+    after
+      1_000 ->
+        IO.puts("Oooops, timeout!")
+        IO.puts(ProcessRegistry.count())
+        backpack
     end
   end
 

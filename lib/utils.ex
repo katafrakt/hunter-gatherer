@@ -8,8 +8,9 @@ defmodule HunterGatherer.Utils do
 
   def is_internal?(url) do
     base = Config.get(:base)
+
     case String.split(url, base |> to_string, parts: 2) do
-      [_,_] -> true
+      [_, _] -> true
       _ -> false
     end
   end

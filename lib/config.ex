@@ -1,10 +1,10 @@
 defmodule HunterGatherer.Config do
   def start_link do
-    Agent.start_link(fn -> Map.new end, name: __MODULE__)
+    Agent.start_link(fn -> Map.new() end, name: __MODULE__)
   end
 
   def get(key) do
-    Agent.get(__MODULE__, &(&1[key]))
+    Agent.get(__MODULE__, & &1[key])
   end
 
   def set(key, value) do
@@ -18,7 +18,7 @@ defmodule HunterGatherer.Config do
     ]
 
     options = Keyword.merge(defaults, opts)
-    Enum.each(options, fn({k,v}) -> set(k, v) end)
+    Enum.each(options, fn {k, v} -> set(k, v) end)
 
     set(:output_file, Keyword.get(options, :output, "report." <> Keyword.get(options, :format)))
     set(:base, URI.parse(url))

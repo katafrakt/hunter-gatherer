@@ -1,97 +1,99 @@
-  defmodule Backpack do
-    @moduledoc """
-    Backpack is hunter-gatherer's most important piece of equipment. It stores a lot of things,
-    from configuration to collection of processed and pending URLs.
-    """
+defmodule Backpack do
+  @moduledoc """
+  Backpack is hunter-gatherer's most important piece of equipment. It stores a lot of things,
+  from configuration to collection of processed and pending URLs.
+  """
 
-    defstruct [:pending, :good, :bad]
+  defstruct [:pending, :good, :bad]
 
-    alias HunterGatherer.Utils
+  alias HunterGatherer.Utils
 
-    @doc """
-    Initializes backpack.
+  @doc """
+  Initializes backpack.
 
-    ## Parameters
+  ## Parameters
 
-    * `base` - base URL from which to start and which is used to determine whether URL is external or internal
-    """
-    def init(base) do
-      %Backpack{
-        pending: [base],
-        good: MapSet.new,
-        bad: Map.new
-      }
-    end
-
-    @doc """
-    Checks whethere there are any URLs left in pending list
-    """
-    def has_next_pending?(backpack) do
-      length(backpack.pending) > 0
-    end
-
-    @doc """
-    Gets the first link from pending list.
-
-    It DOES NOT check if anything is there so should be used along with `has_next_pending?`.
-    Returns tuple of URL and new backpack (with reduces pending list).
-    """
-    def get_next_pending(backpack) do
-      [url|tail] = backpack.pending
-      new_backpack = struct(backpack, pending: tail)
-      {url, new_backpack}
-    end
-
-    @doc """
-    Appends an URL to "bad" list along with reason why it's bad.
-    Returns new backpack.
-    """
-    def append_bad(backpack, url, reason) do
-      new_bad = backpack.bad |> Map.put(url, reason)
-      struct(backpack, bad: new_bad)
-    end
-
-    @doc """
-    Appends an URL to "good" list.
-    Returns new backpack.
-    """
-    def append_good(backpack, url) do
-      new_good = backpack.good |> MapSet.put(url)
-      struct(backpack, good: new_good)
-    end
-
-    @doc """
-    Appends new URLs to pending list.
-    Also checks for duplicates and removes them.
-    Returns new backpack.
-    """
-    def append_pending(backpack, links) do
-      links_not_checked = Enum.map(links, &Utils.normalize_url(&1))
-        |> Enum.reject(fn(url) ->
-          Backpack.has_been_processed?(backpack, url)
-        end)
-      new_pending = (backpack.pending ++ links_not_checked) |> Enum.uniq
-      struct(backpack, pending: new_pending)
-    end
-
-    @doc """
-    Checks if link has already been processed.
-    """
-    def has_been_processed?(backpack, url) do
-      MapSet.member?(backpack.good, url) || Map.has_key?(backpack.bad, url)
-    end
-
-    @doc """
-    Returns number of pending urls to check
-    """
-    def num_of_pending(backpack) do
-      length(backpack.pending)
-    end
-
-    @doc """
-    Returns number of processed urls
-    """
-    def num_of_processed(backpack) do
-      MapSet.size(backpack.good) + Map.size(backpack.bad)
-    end
+  * `base` - base URL from which to start and which is used to determine whether URL is external or internal
+  """
+  def init(base) do
+    %Backpack{
+      pending: [base],
+      good: MapSet.new(),
+      bad: Map.new()
+    }
   end
+
+  @doc """
+  Checks whethere there are any URLs left in pending list
+  """
+  def has_next_pending?(backpack) do
+    length(backpack.pending) > 0
+  end
+
+  @doc """
+  Gets the first link from pending list.
+
+  It DOES NOT check if anything is there so should be used along with `has_next_pending?`.
+  Returns tuple of URL and new backpack (with reduces pending list).
+  """
+  def get_next_pending(backpack) do
+    [url | tail] = backpack.pending
+    new_backpack = struct(backpack, pending: tail)
+    {url, new_backpack}
+  end
+
+  @doc """
+  Appends an URL to "bad" list along with reason why it's bad.
+  Returns new backpack.
+  """
+  def append_bad(backpack, url, reason) do
+    new_bad = backpack.bad |> Map.put(url, reason)
+    struct(backpack, bad: new_bad)
+  end
+
+  @doc """
+  Appends an URL to "good" list.
+  Returns new backpack.
+  """
+  def append_good(backpack, url) do
+    new_good = backpack.good |> MapSet.put(url)
+    struct(backpack, good: new_good)
+  end
+
+  @doc """
+  Appends new URLs to pending list.
+  Also checks for duplicates and removes them.
+  Returns new backpack.
+  """
+  def append_pending(backpack, links) do
+    links_not_checked =
+      Enum.map(links, &Utils.normalize_url(&1))
+      |> Enum.reject(fn url ->
+        Backpack.has_been_processed?(backpack, url)
+      end)
+
+    new_pending = (backpack.pending ++ links_not_checked) |> Enum.uniq()
+    struct(backpack, pending: new_pending)
+  end
+
+  @doc """
+  Checks if link has already been processed.
+  """
+  def has_been_processed?(backpack, url) do
+    MapSet.member?(backpack.good, url) || Map.has_key?(backpack.bad, url)
+  end
+
+  @doc """
+  Returns number of pending urls to check
+  """
+  def num_of_pending(backpack) do
+    length(backpack.pending)
+  end
+
+  @doc """
+  Returns number of processed urls
+  """
+  def num_of_processed(backpack) do
+    MapSet.size(backpack.good) + Map.size(backpack.bad)
+  end
+end

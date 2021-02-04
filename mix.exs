@@ -2,13 +2,15 @@ defmodule HunterGatherer.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :hunter_gatherer,
-     version: "0.1.0",
-     elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     escript: [main_module: HunterGatherer.CLI],
-     deps: deps()]
+    [
+      app: :hunter_gatherer,
+      version: "0.1.0",
+      elixir: "~> 1.4",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      escript: [main_module: HunterGatherer.CLI],
+      deps: deps()
+    ]
   end
 
   # Configuration for the OTP application
@@ -33,7 +35,8 @@ defmodule HunterGatherer.Mixfile do
       {:floki, "~> 0.29.0"},
       {:httpoison, "~> 1.8.0"},
       {:mustachex, "~> 0.0.1"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 end

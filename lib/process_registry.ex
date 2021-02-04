@@ -2,13 +2,14 @@ defmodule HunterGatherer.ProcessRegistry do
   alias HunterGatherer.UrlProcessor
 
   def start_link do
-    Agent.start_link(fn -> MapSet.new end, name: __MODULE__)
+    Agent.start_link(fn -> MapSet.new() end, name: __MODULE__)
   end
 
   def start_enough_processes(backpack, max_processes) do
     remove_dead()
     num_of_pending = Backpack.num_of_pending(backpack)
     processes_to_start = Enum.min([num_of_pending, max_processes]) - count()
+
     if processes_to_start > 0 do
       {url, backpack} = Backpack.get_next_pending(backpack)
 
@@ -25,11 +26,11 @@ defmodule HunterGatherer.ProcessRegistry do
   end
 
   def remove_dead do
-    Agent.update(__MODULE__, fn(set) ->
+    Agent.update(__MODULE__, fn set ->
       set
-      |> MapSet.to_list
+      |> MapSet.to_list()
       |> Enum.filter(&Process.alive?(&1))
-      |> MapSet.new
+      |> MapSet.new()
     end)
   end
 
