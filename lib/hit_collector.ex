@@ -1,6 +1,6 @@
 defmodule HunterGatherer.HitCollector do
   @moduledoc false
-  
+
   alias HunterGatherer.Utils
 
   def start_link do
@@ -21,8 +21,8 @@ defmodule HunterGatherer.HitCollector do
 
   def get(url) do
     case Agent.get(__MODULE__, & &1[url]) do
-      nil -> 0
-      num -> num
+      nil -> %{count: 0, source: []}
+      data -> data
     end
   end
 

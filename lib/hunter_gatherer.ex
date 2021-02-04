@@ -41,8 +41,6 @@ defmodule HunterGatherer do
         |> Backpack.append_bad(url, reason)
     after
       1_000 ->
-        IO.puts("Oooops, timeout!")
-        IO.puts(ProcessRegistry.count())
         backpack
     end
   end

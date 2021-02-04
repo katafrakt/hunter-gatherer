@@ -94,6 +94,6 @@ defmodule Backpack do
   Returns number of processed urls
   """
   def num_of_processed(backpack) do
-    MapSet.size(backpack.good) + Map.size(backpack.bad)
+    MapSet.size(backpack.good) + map_size(backpack.bad)
   end
 end

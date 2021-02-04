@@ -1,4 +1,4 @@
-defmodule HunterGatherer.UrlProcessor do  @moduledoc false
+defmodule HunterGatherer.UrlProcessor do 
   @moduledoc false
 
   alias HunterGatherer.ProcessRegistry
