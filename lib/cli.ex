@@ -1,4 +1,6 @@
 defmodule HunterGatherer.CLI do
+  @moduledoc false
+  
   def main(args) do
     {opts, [url], _} =
       OptionParser.parse(args,

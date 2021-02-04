@@ -1,4 +1,6 @@
 defmodule HunterGatherer.Reporters.Json do
+  @moduledoc false
+  
   alias HunterGatherer.HitCollector
   alias HunterGatherer.Config
 

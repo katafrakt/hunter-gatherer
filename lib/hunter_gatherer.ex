@@ -1,4 +1,6 @@
 defmodule HunterGatherer do
+  @moduledoc false
+  
   alias HunterGatherer.Reporters
   alias HunterGatherer.ProcessRegistry
   alias HunterGatherer.HitCollector

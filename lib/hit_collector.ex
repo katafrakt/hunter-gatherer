@@ -1,4 +1,6 @@
 defmodule HunterGatherer.HitCollector do
+  @moduledoc false
+  
   alias HunterGatherer.Utils
 
   def start_link do

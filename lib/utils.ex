@@ -1,4 +1,6 @@
 defmodule HunterGatherer.Utils do
+  @moduledoc false
+  
   alias HunterGatherer.Config
 
   def normalize_url(url) do
