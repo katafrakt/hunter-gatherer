@@ -28,7 +28,10 @@ defmodule HunterGatherer.UrlProcessor do
   defp get_links(original_url, result) do
     if Utils.is_internal?(original_url) do
       original_uri = URI.parse(original_url)
-      result.body
+
+      {:ok, document} = Floki.parse_document(result.body)
+
+      document
       |> Floki.find("a")
       |> Floki.attribute("href")
       |> Enum.map(fn(url) -> URI.parse(url) end)

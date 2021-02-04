@@ -30,8 +30,8 @@ defmodule HunterGatherer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:floki, "~> 0.17.0"},
-      {:httpoison, "~> 0.11.1"},
+      {:floki, "~> 0.29.0"},
+      {:httpoison, "~> 1.8.0"},
       {:mustachex, "~> 0.0.1"},
       {:poison, "~> 3.1"}
     ]

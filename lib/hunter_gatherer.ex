@@ -4,7 +4,7 @@ defmodule HunterGatherer do
   alias HunterGatherer.HitCollector
   alias HunterGatherer.Config
 
-  def start(url, opts \\ %{}) do
+  def start(url, opts \\ []) do
     initialize()
     backpack = Backpack.init(url)
     Config.setup(url, opts)
