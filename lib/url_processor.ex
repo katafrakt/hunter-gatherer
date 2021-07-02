@@ -17,7 +17,6 @@ defmodule HunterGatherer.UrlProcessor do
     case HTTPoison.get(url, [{"User-Agent", Config.get(:user_agent)}],
            follow_redirect: true,
            max_redirect: 8,
-           ssl: [{:versions, [:"tlsv1.2"]}],
            timeout: 30_000,
            recv_timeout: 45_000
          ) do
@@ -35,16 +34,8 @@ defmodule HunterGatherer.UrlProcessor do
   defp get_links(original_url, result) do
     if Utils.is_internal?(original_url) do
       original_uri = URI.parse(original_url)
-
-      {:ok, document} = Floki.parse_document(result.body)
-
-      document
-      |> Floki.find("a")
-      |> Floki.attribute("href")
-      |> Enum.map(fn url -> URI.parse(url) end)
-      |> Enum.map(fn url ->
-        URI.merge(Config.get(:base), URI.merge(original_uri, url)) |> to_string
-      end)
+      config = %Config{base: Config.get(:base)}
+      LinkExtractor.call(result.body, config, original_uri)
     else
       []
     end

@@ -1,6 +1,10 @@
 defmodule HunterGatherer.Config do
   @moduledoc false
 
+  defstruct [:base, :user_agent, :format]
+
+  @default_user_agent "Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101 Firefox/59.0"
+
   def start_link do
     Agent.start_link(fn -> Map.new() end, name: __MODULE__)
   end
@@ -11,6 +15,14 @@ defmodule HunterGatherer.Config do
 
   def set(key, value) do
     Agent.update(__MODULE__, &Map.put(&1, key, value))
+  end
+
+  def new(url, opts \\ []) do
+    %__MODULE__{
+      format: Keyword.get(opts, :format, "html"),
+      user_agent: Keyword.get(opts, :user_agent, @default_user_agent),
+      base: URI.parse(url)
+    }
   end
 
   def setup(url, opts) do
