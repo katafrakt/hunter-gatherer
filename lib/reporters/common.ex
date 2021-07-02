@@ -1,6 +1,6 @@
 defmodule HunterGatherer.Reporters.Common do
   @moduledoc false
-  
+
   def select(format) do
     case format do
       "json" -> HunterGatherer.Reporters.Json

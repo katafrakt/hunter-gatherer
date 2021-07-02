@@ -1,6 +1,6 @@
 defmodule HunterGatherer.ProcessRegistry do
   @moduledoc false
-  
+
   alias HunterGatherer.UrlProcessor
 
   def start_link do

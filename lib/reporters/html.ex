@@ -1,6 +1,6 @@
 defmodule HunterGatherer.Reporters.Html do
   @moduledoc false
-  
+
   alias HunterGatherer.HitCollector
   alias HunterGatherer.Config
 
