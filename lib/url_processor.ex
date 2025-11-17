@@ -14,18 +14,18 @@ defmodule HunterGatherer.UrlProcessor do
   end
 
   defp process_url(url) do
-    case HTTPoison.get(url, [{"User-Agent", Config.get(:user_agent)}],
-           follow_redirect: true,
-           max_redirect: 8,
-           ssl: [{:versions, [:"tlsv1.2"]}],
-           timeout: 30_000,
-           recv_timeout: 45_000
+    case Req.get(url,
+           headers: [{"User-Agent", Config.get(:user_agent)}],
+           redirect: true,
+           max_redirects: 8,
+           connect_options: [transport_opts: [versions: [:"tlsv1.2"], timeout: 30_000]],
+           receive_timeout: 45_000
          ) do
-      {:ok, %{status_code: 200} = result} ->
+      {:ok, %{status: 200} = result} ->
         {:ok, url, get_links(url, result)}
 
       {:ok, result} ->
-        {:error, url, result.status_code}
+        {:error, url, result.status}
 
       {:error, error} ->
         {:error, url, error}

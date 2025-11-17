@@ -5,8 +5,7 @@ defmodule HunterGatherer.Mixfile do
     [
       app: :hunter_gatherer,
       version: "0.1.0",
-      elixir: "~> 1.4",
-      build_embedded: Mix.env() == :prod,
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       escript: [main_module: HunterGatherer.CLI],
       deps: deps()
@@ -18,7 +17,7 @@ defmodule HunterGatherer.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :httpoison]]
+    [extra_applications: [:logger]]
   end
 
   # Dependencies can be Hex packages:
@@ -32,11 +31,11 @@ defmodule HunterGatherer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:floki, "~> 0.29.0"},
-      {:httpoison, "~> 1.8.0"},
-      {:mustachex, "~> 0.0.1"},
-      {:poison, "~> 3.1"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:floki, "~> 0.36.0"},
+      {:req, "~> 0.4.0"},
+      {:mustachex, "~> 0.0.2"},
+      {:poison, "~> 6.0"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end
